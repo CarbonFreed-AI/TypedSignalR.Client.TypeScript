@@ -86,9 +86,9 @@ public class App : ConsoleAppBase
         return compilation;
     }
 
-    private async Task TranspileCore(
-        Compilation compilation,
+    private async Task TranspileCore(Compilation compilation,
         string outputDir,
+        string? dtoSource,
         NewLineOption newLine,
         int indent,
         bool referencedAssembliesTranspilation,
@@ -132,20 +132,25 @@ public class App : ConsoleAppBase
             newLine,
             indent,
             referencedAssembliesTranspilation,
-            enableAttributeReference
+            enableAttributeReference, 
+            Context.CancellationToken
         );
 
         // Tapper
-        var transpiler = new Transpiler(compilation, options, _logger);
 
-        var generatedSourceCodes = transpiler.Transpile();
+        IReadOnlyList<GeneratedSourceCode>? generatedSourceCodes = null;
+        if (string.IsNullOrEmpty(dtoSource))
+        {
+            var transpiler = new Transpiler(compilation, options, _logger);
+            generatedSourceCodes = transpiler.Transpile();
+        }
 
         // TypedSignalR.Client.TypeScript
         var signalrCodeGenerator = new TypedSignalRCodeGenerator(compilation, options, _logger);
 
         var generatedSignalRSourceCodes = signalrCodeGenerator.Generate();
 
-        await OutputToFiles(outputDir, generatedSourceCodes.Concat(generatedSignalRSourceCodes), newLine);
+        await OutputToFiles(outputDir, generatedSourceCodes != null ? generatedSourceCodes.Concat(generatedSignalRSourceCodes) : generatedSignalRSourceCodes, newLine);
     }
 
     private async Task OutputToFiles(string outputDir, IEnumerable<GeneratedSourceCode> generatedSourceCodes, NewLineOption newLine)

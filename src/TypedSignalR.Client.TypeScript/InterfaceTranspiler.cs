@@ -1,5 +1,6 @@
-using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.IO;
 using System.Linq;
 using System.Xml;
 using Microsoft.CodeAnalysis;
@@ -69,7 +70,7 @@ internal class InterfaceTranspiler
         var tapperAttributeAnnotatedTypesLookup = appearTypes
             .SelectMany(RoslynExtensions.GetRelevantTypes)
             .OfType<INamedTypeSymbol>()
-            .Where(x => !x.ContainingNamespace.Name.StartsWith("Microsoft") && !x.ContainingNamespace.Name.StartsWith("System"))
+            .Where(x => !x.GetFullMetadataName().Split('.').Any(ns => ns is "System" or "Microsoft"))
             .Distinct<INamedTypeSymbol>(SymbolEqualityComparer.Default)
             .ToLookup<INamedTypeSymbol, INamespaceSymbol>(static x => x.ContainingNamespace, SymbolEqualityComparer.Default);
 
@@ -85,7 +86,7 @@ internal class InterfaceTranspiler
             // linked, otherwise the generated DTOs from Tapper will be linked.
 
             var typeLinks = groupingType.GroupBy(x =>
-                _options.SourceLinkProvider.GetSourceLink(x.Name, _options.OutputPath) ?? $"../{groupingType.Key.ToDisplayString()}").ToArray();
+                _options.SourceLinkProvider.GetSourceLink(x.Name, Path.Combine(_options.OutputPath, "index.ts")) ?? $"../{groupingType.Key.ToDisplayString()}").ToArray();
             foreach (var link in typeLinks)
                 codeWriter.AppendLine($"import {{ {string.Join(", ", link.Select(x => x.Name))} }} from '{link.Key}';");
         }
@@ -107,7 +108,7 @@ internal class InterfaceTranspiler
         {
             codeWriter.AppendLine("/**");
             codeWriter.AppendLine($"* {summary}");
-            codeWriter.AppendLine($"*/");
+            codeWriter.AppendLine("*/");
         }
 
         codeWriter.AppendLine($"export type {interfaceSymbol.Name} = {{");

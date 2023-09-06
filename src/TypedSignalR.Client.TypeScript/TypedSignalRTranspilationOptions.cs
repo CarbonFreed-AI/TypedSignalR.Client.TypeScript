@@ -1,11 +1,16 @@
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Tapper;
+using TypedSignalR.Client.TypeScript.SourceLinking;
 
 namespace TypedSignalR.Client.TypeScript;
 
 public class TypedSignalRTranspilationOptions : TranspilationOptions, ITypedSignalRTranspilationOptions
 {
     public MethodStyle MethodStyle { get; }
+    public string OutputPath { get; }
+    public ISourceLinkProvider SourceLinkProvider { get; }
 
     private TypedSignalRTranspilationOptions(
         string outputPath,
@@ -30,6 +35,8 @@ public class TypedSignalRTranspilationOptions : TranspilationOptions, ITypedSign
             enableAttributeReference)
     {
         MethodStyle = methodStyle;
+        OutputPath = outputPath;
+        SourceLinkProvider = sourceLinkProvider;
     }
 
     public static async Task<TypedSignalRTranspilationOptions> Make(

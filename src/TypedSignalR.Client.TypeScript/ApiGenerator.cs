@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
@@ -71,7 +72,7 @@ internal class ApiGenerator
         var tapperAttributeAnnotatedTypesLookup = hubParametersAndReturnTypes.Concat(receiverParameterTypes)
             .SelectMany(RoslynExtensions.GetRelevantTypes)
             .OfType<INamedTypeSymbol>()
-            .Where(x => x.IsAttributeAnnotated(_specialSymbols.TranspilationSourceAttributeSymbols))
+            .Where(x => !x.GetFullMetadataName().Split('.').Any(ns => ns is "System" or "Microsoft"))
             .Distinct<INamedTypeSymbol>(SymbolEqualityComparer.Default)
             .ToLookup<INamedTypeSymbol, INamespaceSymbol>(static x => x.ContainingNamespace, SymbolEqualityComparer.Default);
 
@@ -82,7 +83,11 @@ internal class ApiGenerator
             // TypedSignalR.Client.TypeScript creates a directory named TypedSignalR.Client in the specified directory
             // and generates TypeScript files there. (e.g. generated/TypedSignalR.Client/index.ts)
             // Therefore, in order to refer to the TypeScript file created by Tapper, we have to specify the directory one level up.
-            sb.AppendLine($"import {{ {string.Join(", ", groupingType.Select(x => x.Name))} }} from '../{groupingType.Key.ToDisplayString()}';");
+
+            var typeLinks = groupingType.GroupBy(x =>
+                _options.SourceLinkProvider.GetSourceLink(x.Name, Path.Combine(_options.OutputPath, "index.ts")) ?? $"../{groupingType.Key.ToDisplayString()}").ToArray();
+            foreach (var link in typeLinks)
+                sb.AppendLine($"import {{ {string.Join(", ", link.Select(x => x.Name))} }} from '{link.Key}';");
         }
 
         return sb.ToString();

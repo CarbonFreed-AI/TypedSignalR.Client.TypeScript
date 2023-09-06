@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32421.90
@@ -32,6 +32,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypedSignalR.Client.TypeScript.Tests.Server", "tests\TypedSignalR.Client.TypeScript.Tests.Server\TypedSignalR.Client.TypeScript.Tests.Server.csproj", "{2A6A7DAF-BA68-435D-822B-03607C3063E1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypedSignalR.Client.TypeScript.Tests.Shared", "tests\TypedSignalR.Client.TypeScript.Tests.Shared\TypedSignalR.Client.TypeScript.Tests.Shared.csproj", "{F8D9F38E-E113-4DB8-B62F-CB60FCD299D6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tapper", "..\Tapper\src\Tapper\Tapper.csproj", "{3D4B415A-266B-4880-80D5-A2C2728BCDAD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tapper.Attributes", "..\Tapper\src\Tapper.Attributes\Tapper.Attributes.csproj", "{4D0F2A18-44EE-4037-8C55-854895D02E8E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -83,6 +87,14 @@ Global
 		{F8D9F38E-E113-4DB8-B62F-CB60FCD299D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F8D9F38E-E113-4DB8-B62F-CB60FCD299D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F8D9F38E-E113-4DB8-B62F-CB60FCD299D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D4B415A-266B-4880-80D5-A2C2728BCDAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D4B415A-266B-4880-80D5-A2C2728BCDAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D4B415A-266B-4880-80D5-A2C2728BCDAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D4B415A-266B-4880-80D5-A2C2728BCDAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D0F2A18-44EE-4037-8C55-854895D02E8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D0F2A18-44EE-4037-8C55-854895D02E8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D0F2A18-44EE-4037-8C55-854895D02E8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D0F2A18-44EE-4037-8C55-854895D02E8E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

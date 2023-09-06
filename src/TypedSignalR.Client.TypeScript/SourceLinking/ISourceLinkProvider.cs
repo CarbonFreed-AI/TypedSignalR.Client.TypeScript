@@ -19,4 +19,13 @@ public interface ISourceLinkProvider
     /// <returns>   The source link.    </returns>
     ///-------------------------------------------------------------------------------------------------
     string? GetSourceLink(string typeName, string relativePath);
+
+    ///-------------------------------------------------------------------------------------------------
+    /// <summary>   Checks whether the DTO for a specific type has already been created.    </summary>
+    ///
+    /// <param name="typeName"> Name of the type.   </param>
+    ///
+    /// <returns>   True if source link, false if not.  </returns>
+    ///-------------------------------------------------------------------------------------------------
+    bool HasSourceLink(string typeName);
 }

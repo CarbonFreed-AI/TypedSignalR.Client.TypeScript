@@ -27,6 +27,10 @@
         "RefAsm": {
             "commandName": "Project",
             "commandLineArgs": "--project ..\\..\\..\\..\\..\\tests\\TypedSignalR.Client.TypeScript.Tests.Server\\TypedSignalR.Client.TypeScript.Tests.Server.csproj --output ..\\..\\..\\..\\..\\tests\\TypeScriptTests\\src\\generated2 -asm true"
+        },
+        "Test-GC": {
+            "commandName": "Project",
+            "commandLineArgs": "--project H:\\CarbonFreed\\GridCert\\src\\Core\\Application\\Application.csproj --output H:\\CarbonFreed\\GridCert\\src\\Web\\Client\\src\\app\\services\\signalR-hubs -d H:\\CarbonFreed\\GridCert\\src\\Web\\Client\\src\\app\\services\\ng-openapi-gen\\api -dn none --eol crlf"
         }
     }
 }
