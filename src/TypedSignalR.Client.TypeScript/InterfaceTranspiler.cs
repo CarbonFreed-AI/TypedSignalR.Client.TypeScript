@@ -69,7 +69,7 @@ internal class InterfaceTranspiler
         var tapperAttributeAnnotatedTypesLookup = appearTypes
             .SelectMany(RoslynExtensions.GetRelevantTypes)
             .OfType<INamedTypeSymbol>()
-            .Where(x => x.IsAttributeAnnotated(_specialSymbols.TranspilationSourceAttributeSymbols))
+            .Where(x => !x.ContainingNamespace.Name.StartsWith("Microsoft") && !x.ContainingNamespace.Name.StartsWith("System"))
             .Distinct<INamedTypeSymbol>(SymbolEqualityComparer.Default)
             .ToLookup<INamedTypeSymbol, INamespaceSymbol>(static x => x.ContainingNamespace, SymbolEqualityComparer.Default);
 
@@ -79,8 +79,15 @@ internal class InterfaceTranspiler
             // Tapper generates a file named (namespace).ts directly under the specified directory(e.g. generated/HogeNamespace.ts).
             // TypedSignalR.Client.TypeScript creates a directory named TypedSignalR.Client in the specified directory
             // and generates TypeScript files there. (e.g. generated/TypedSignalR.Client/index.ts)
-            // Therefore, in order to refer to the TypeScript file created by Tapper, we have to specify the directory one level up.
-            codeWriter.AppendLine($"import {{ {string.Join(", ", groupingType.Select(x => x.Name))} }} from '../{groupingType.Key.ToDisplayString()}';");
+            // Therefore, in order to refer to the TypeScript file created by Tapper, we have to specify the directory one level up
+
+            // All DTOs which have been externally generated and were previously detected by the SourceLinkProvider will be appropriately
+            // linked, otherwise the generated DTOs from Tapper will be linked.
+
+            var typeLinks = groupingType.GroupBy(x =>
+                _options.SourceLinkProvider.GetSourceLink(x.Name, _options.OutputPath) ?? $"../{groupingType.Key.ToDisplayString()}").ToArray();
+            foreach (var link in typeLinks)
+                codeWriter.AppendLine($"import {{ {string.Join(", ", link.Select(x => x.Name))} }} from '{link.Key}';");
         }
 
         codeWriter.AppendLine();
@@ -122,7 +129,7 @@ internal class InterfaceTranspiler
     private static void WriteJSDoc(IMethodSymbol methodSymbol, ref CodeWriter codeWriter)
     {
         var doc = GetDocumentationFromSymbol(methodSymbol);
-
+        
         codeWriter.AppendLine("    /**");
 
         // Write method summary if available
